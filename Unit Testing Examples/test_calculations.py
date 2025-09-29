@@ -7,7 +7,7 @@ class TestRectangleCalculations(unittest.TestCase):
         """
         Test the happy paths, what a user is expected to enter
         """
-        self.assertEqual(calculate_rectangle_area(5, 2), 10)
+        self.assertEqual(calculate_rectangle_area(5, 2), 50)
         self.assertEqual(calculate_rectangle_area(5.5, 2.5), 13.75)
         self.assertNotEqual(calculate_rectangle_area(10, 8), 70)
 
