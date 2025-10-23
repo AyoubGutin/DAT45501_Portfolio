@@ -1,5 +1,5 @@
 import unittest
-from compound_interest import compound_interest
+from src.basic_python.compound_interest import compound_interest
 
 
 class CompoundInterestTesting(unittest.TestCase):

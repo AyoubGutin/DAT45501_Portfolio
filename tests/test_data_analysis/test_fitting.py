@@ -1,7 +1,7 @@
 # -- Imports --
 import unittest
 import numpy as np
-from best_fit_line import fit_line
+from src.data_analysis.best_fit_line import fit_line
 
 
 # -- Test Suite #1 --

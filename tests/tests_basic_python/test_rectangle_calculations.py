@@ -1,5 +1,5 @@
 import unittest
-from calculations import calculate_rectangle_area
+from src.basic_python.rectangle_calculation import calculate_rectangle_area
 
 
 class TestRectangleCalculations(unittest.TestCase):
