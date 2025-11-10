@@ -3,6 +3,7 @@
 import pandas as pd
 import numpy as np
 import csv
+from typing import Dict, Any
 
 
 def detect_delimiter(file_path: str, encoding: str = "utf-8"):
@@ -41,7 +42,7 @@ def create_df(
     args:
         file_path (str): File path of the csv or excel file
         extension (str): File extension 'csv', 'xls', 'xlsx', etc.
-        sep (str): CSV delimiter, default is ","
+        sep (str): CSV delimiter, default is ','
         header (int): Row number for header, default is 0
         encoding (str): Encoding for CSV files, default 'utf-8'
         parse_dates (list or None): Columns to parse as dates
@@ -114,7 +115,11 @@ def df_report(df: pd.DataFrame) -> None:
 
     # Numeric Columns Summary
     print(f"\n{format_sep} NUMERIC SUMMARY {format_sep}")
-    numeric_summary = df.describe(include=[np.number])
+    try:
+        numeric_summary = df.describe(include=[np.number])
+    except Exception as e:
+        print(f"Possible Error: {e}")
+        numeric_summary = pd.DataFrame()
     if numeric_summary.empty:
         print("No numerical columns")
     else:
@@ -147,3 +152,51 @@ def drop_null_rows(df: pd.DataFrame, subset_cols: list = None) -> pd.DataFrame:
     print(f"Dropped {rows_dropped} rows that had null values")
 
     return cleaned_df
+
+
+def idenitfy_invalid_numerics(df: pd.DataFrame, col: str) -> Dict[str, Any]:
+    report = {}
+    # Replace invalid values as NaN
+    coerced_series = pd.to_numeric(df[col], errors="coerce")
+
+    # get where conversion resulted in a NaN, and locate where this happened via mask
+    invalid_mask = coerced_series.isna() & df[col].notna()
+    invalid_values = df.loc[invalid_mask, col]
+
+    report[col] = {
+        "count": len(invalid_values),
+        "unique_values": invalid_values.unique().tolist(),
+    }
+
+    return report
+
+
+def to_numeric(df: pd.DataFrame, subset_cols: list = None) -> pd.DataFrame:
+    conversion_report = {}
+
+    df_cleaned = df.copy()
+
+    cols_to_proces = subset_cols if subset_cols is not None else []
+
+    for col in cols_to_proces:
+        if df_cleaned[col].dtype == "object":
+            df_cleaned[col] = df_cleaned[col].str.replace(",", "", regex=False)
+            df_cleaned[col] = df_cleaned[col].str.replace(" ", "", regex=False)
+
+        # identification incorrect numerics and report it
+        col_report = idenitfy_invalid_numerics(df_cleaned, col)
+        conversion_report.update(col_report)
+
+        # Actual conversion
+        df_cleaned[col] = pd.to_numeric(df_cleaned[col], errors="coerce")
+
+        count = conversion_report.get(col, {}).get("count", 0)
+        unique_values = conversion_report.get(col, {}).get("unique_values")
+        if count > 0:
+            print(f"Column {col} had {count} invalid value(s) converted to NaN.")
+            print(f"Column {col} invalid values: {unique_values}")
+
+        else:
+            print(f"Sucessfully converted Column {col} to numeric")
+
+    return df_cleaned, conversion_report
