@@ -1,23 +1,12 @@
 # Election Data for the 2016 Election
-from pathlib import Path
 import numpy as np
 import plotly.express as px
 from src.utils.df_utils import create_df, df_report, drop_null_rows
+from src.utils.file_utils import find_root
 
-# -- CONSTANTS --
-
-current_dir = Path(__file__).parent
-# (current_dir.parents is a list like [/.../src/data_analysis, /.../src, /.../, /])
-PROJECT_ROOT = None
-for parent in current_dir.parents:
-    # if requirements, we know its the project root
-    if (parent / "requirements.txt").exists():
-        PROJECT_ROOT = parent
-        break
-if PROJECT_ROOT is None:
-    raise FileNotFoundError("Could not find project root")
 
 # -- Setup --
+PROJECT_ROOT = find_root()
 file_path = PROJECT_ROOT / "data" / "US-2016-primary.csv"
 elections_df = create_df(file_path=file_path, extension="csv")
 
