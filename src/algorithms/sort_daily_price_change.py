@@ -23,7 +23,7 @@ nasdaq_df_cleaned, _ = to_numeric(
 # -- SORTING --
 
 
-def time_sort(df: pd.DataFrame, column: str, ascending: bool = False, kind=None):
+def pandas_time_sort(df: pd.DataFrame, column: str, ascending: bool = False, kind=None):
     start_time = time.perf_counter()
     df_sorted = df.sort_values(by=column, ascending=False, ignore_index=True, kind=kind)
     end_time = time.perf_counter()
@@ -36,4 +36,4 @@ def time_sort(df: pd.DataFrame, column: str, ascending: bool = False, kind=None)
 # Compare sorting algorithms (compatible w/ pandas .sort_values)
 sorting_algortihms = ["quicksort", "mergesort", "heapsort"]
 for kind in sorting_algortihms:
-    time_sort(df=nasdaq_df, column="Close", kind=kind)
+    pandas_time_sort(df=nasdaq_df, column="Close", kind=kind)
