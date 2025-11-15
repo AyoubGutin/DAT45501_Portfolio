@@ -1,15 +1,30 @@
-# 1. Split list into sorted and unsorted
-# 2. Append least elements into sorted list
+# -- Imports --
+from typing import List
 
-arr = [5, 3, 2, 4, 10, 1, 9]
-n = len(arr)
 
-for i in range(n):
-    least_index = i
-    for j in range(i + 1, n):
-        if arr[j] < arr[least_index]:
-            least_index = j
+# -- Selection Sort Implementation
+def selection_sort_func(arr: List) -> List:
+    """
+    Selection sort implementation
 
-    arr[i], arr[least_index] = arr[least_index], arr[i]
+    1. Start the loop through the whole list
+    2. Initialise the least index, starting at i
+    3. Go through the list again from the least_index, and find the smallest element from the unsorted portion
+    4. Repeat until list is sorted
 
-print(arr)
+    args:
+        arr (List): The unsorted array
+
+    return:
+        arr (List): The sorted array
+    """
+    n = len(arr)
+    for i in range(n):
+        least_index = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[least_index]:
+                least_index = j
+
+        arr[i], arr[least_index] = arr[least_index], arr[i]
+
+    return arr

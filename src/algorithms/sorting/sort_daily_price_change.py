@@ -1,6 +1,7 @@
 # This price gets nasdaq price history over a given date, and sorts it
 # This for understanding the sort complexities
 
+# -- Imports --
 from src.utils.file_utils import find_root
 from src.utils.df_utils import create_df, df_report, to_numeric
 import time
@@ -20,17 +21,29 @@ nasdaq_df_cleaned, _ = to_numeric(
     nasdaq_df, subset_cols=["Open", "High", "Low", "Close"]
 )
 
-# -- SORTING --
 
-
+# -- Sorting --
 def pandas_time_sort(df: pd.DataFrame, column: str, ascending: bool = False, kind=None):
+    """
+    Sorts a DataFrame column using pandas .sort_values and measures the execution time
+
+    args:
+        df (pd.DataFrame): DataFrame to sort
+        column (str): Column name to sort by
+        ascending (bool): Boolean indicating sort order
+        kind (str): Sorting algorithm to use, compatible with pandas
+
+    returns:
+        df_sorted: The sorted dataframe
+
+    """
     start_time = time.perf_counter()
     df_sorted = df.sort_values(by=column, ascending=False, ignore_index=True, kind=kind)
     end_time = time.perf_counter()
     execution_time = end_time - start_time
     print(f"\nSORT: {kind}\nEXECUTION TIME: {execution_time:6f}\n")
 
-    return
+    return df_sorted
 
 
 # Compare sorting algorithms (compatible w/ pandas .sort_values)
